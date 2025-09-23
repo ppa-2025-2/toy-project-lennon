@@ -1,7 +1,6 @@
 package com.example.demo.domain;
 
 import java.util.HashSet;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +18,6 @@ import jakarta.validation.Valid;
 @Business
 @Validated
 public class TicketBusiness {
-    Scanner in = new Scanner(System.in);
 
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
