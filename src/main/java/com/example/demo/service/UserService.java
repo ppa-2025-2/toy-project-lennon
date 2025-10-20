@@ -1,28 +1,22 @@
 package com.example.demo.service;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 
 import com.example.demo.controller.dto.NewUserDTO;
 import com.example.demo.repository.IslandRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.exceptions.NotFoundException;
-import com.example.demo.repository.entity.Island;
 import com.example.demo.repository.entity.Profile;
 import com.example.demo.repository.entity.Role;
 import com.example.demo.repository.entity.User;
-import com.example.demo.repository.entity.Workstation;
 import com.example.demo.service.stereotype.Business;
 
-import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 
 @Business
@@ -30,10 +24,7 @@ import jakarta.validation.Valid;
 @Validated
 public class UserService {
 
-    private final IslandRepository islandRepository;
 
-    @SuppressWarnings("unused")
-    private final EntityManager em;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final UserRepository userRepository;
@@ -42,56 +33,12 @@ public class UserService {
 
     public UserService(
             IslandRepository islandRepository,
-            EntityManager em,
             UserRepository userRepository,
             RoleRepository roleRepository,
             @Value("${app.user.default.roles}") Set<String> defaultRoles) {
-        this.islandRepository = islandRepository;
-        this.em = em;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.defaultRoles = defaultRoles;
-    }
-
-    public void alocarWorkstationDisponivel(@NonNull Integer userId) {
-
-        final var user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException());
-
-        // POO: agregação vs composição (aggregation vs composition)
-        final var islands = islandRepository.findIslandWithAvailableWorkstations();
-
-        if (islands.isEmpty()) {
-            throw new IllegalStateException("Workstations not available");
-        }
-
-        // island 0 square 2/4
-        // island 1 triangular 2/3
-        // island 3 rectangular 1/6
-
-        // busca ilhas começando por uma ws livre, depois duas, ...
-        Island freeIsland = islands.getFirst();
-        for (int slots = 1; slots < Island.Disposition.CIRCULAR.getPlacements(); slots++) {
-            final int positions = slots;
-            var possibleIsland = islands.stream()
-                    .filter(i -> i.getWorkstations().stream()
-                            .map(Workstation::getUser)
-                            .filter(Objects::nonNull)
-                            .count() == positions)
-                    .findFirst();
-            if (possibleIsland.isPresent()) {
-                freeIsland = possibleIsland.get();
-                break;
-            }
-        }
-
-        // primeira workstation livre e seta o usuário
-        freeIsland.getWorkstations().stream()
-                .filter(ws -> ws.getUser() == null)
-                .findFirst()
-                .ifPresent(ws -> ws.setUser(user));
-
-        islandRepository.save(freeIsland);
     }
 
     public void cadastrarUsuario(@Valid NewUserDTO newUser) {
