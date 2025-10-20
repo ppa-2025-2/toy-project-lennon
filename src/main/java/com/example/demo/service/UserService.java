@@ -1,28 +1,27 @@
-package com.example.demo.domain;
+package com.example.demo.service;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.example.demo.controller.dto.NewUserDTO;
-import com.example.demo.domain.stereotype.Business;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.entity.Profile;
 import com.example.demo.repository.entity.Role;
 import com.example.demo.repository.entity.User;
+import com.example.demo.service.stereotype.Business;
 
 import jakarta.validation.Valid;
 
-// Spring -> possui um container de Injeção de Dependências
-
-// estereótipo
-@Business // Domain, DomainService, Service, UseCase
+@Business
+@Service
 @Validated
-public class UserBusiness {
+public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder = 
         new BCryptPasswordEncoder();
@@ -30,7 +29,7 @@ public class UserBusiness {
     private final RoleRepository roleRepository;
     private final Set<String> defaultRoles;
 
-    public UserBusiness(
+    public UserService(
         UserRepository userRepository,
         RoleRepository roleRepository,
         @Value("${app.user.default.roles}")
@@ -41,20 +40,7 @@ public class UserBusiness {
         this.defaultRoles = defaultRoles;
     }
     
-    // cadastrar usuário é um use case (é uma feature)
     public void cadastrarUsuario(@Valid NewUserDTO newUser) {
-        // if (newUser.email() == null || newUser.password() == null) {
-        //     throw new IllegalArgumentException("Email e senha são obrigatórios");
-        // }
-
-        // if (newUser.email().isEmpty() || newUser.password().isEmpty()) {
-        //     throw new IllegalArgumentException("Email e senha não podem estar vazios");
-        // }
-
-        // if (!newUser.email().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-        //     throw new IllegalArgumentException("Email não é válido");
-        // }
-
         if (!newUser.password().matches("^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$")) {
             throw new IllegalArgumentException("A senha deve ter pelo menos 8 caracteres e conter pelo menos uma letra e um número");
         }

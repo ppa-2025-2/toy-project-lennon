@@ -13,20 +13,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.controller.dto.NewUserDTO;
-import com.example.demo.domain.UserBusiness;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.entity.User;
+import com.example.demo.service.UserService;
 
 
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private UserBusiness userBusiness;
+    private UserService userBusiness;
     private UserRepository userRepository;
 
     public UserController(
-            UserBusiness userBusiness,
+            UserService userBusiness,
             UserRepository userRepository
         ) {
         this.userBusiness = userBusiness;
