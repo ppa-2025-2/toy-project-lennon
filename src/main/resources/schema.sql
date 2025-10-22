@@ -51,3 +51,22 @@ CREATE TABLE IF NOT EXISTS tickets_observers
     FOREIGN KEY (ticket_id) REFERENCES tickets (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+CREATE TABLE IF NOT EXISTS islands (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content VARCHAR(255) NOT NULL,
+    disposition VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS workstations (
+    id VARCHAR(255) PRIMARY KEY,
+    specs VARCHAR(255) NOT NULL,
+    island_id INTEGER,
+    user_id INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (island_id) REFERENCES islands(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
