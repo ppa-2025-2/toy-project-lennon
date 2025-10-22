@@ -19,7 +19,7 @@ public class IslandController {
     }
 
     @PostMapping("/alocar/{userId}")
-    public ResponseEntity<Void> alocarWorkstation(@PathVariable Integer userId) {
+    public ResponseEntity<Void> alocarWorkstation(@PathVariable("userId") Integer userId) {
         islandService.alocarWorkstationDisponivel(userId);
         return ResponseEntity.ok().build();
     }
