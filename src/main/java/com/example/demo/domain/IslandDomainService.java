@@ -32,10 +32,7 @@ public class IslandDomainService {
             }
         }
 
-        freeIsland.getWorkstations().stream()
-                .filter(ws -> ws.getUser() == null)
-                .findFirst()
-                .ifPresent(ws -> ws.setUser(user)); 
+        freeIsland.assignUserToTheFirstWorkstationAvailable(user);; 
 
         return freeIsland; 
     }
