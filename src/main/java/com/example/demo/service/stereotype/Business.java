@@ -1,4 +1,4 @@
-package com.example.demo.domain.stereotype;
+package com.example.demo.service.stereotype;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
